@@ -1,0 +1,2 @@
+const items=["Google Calendar","Shopify / WooCommerce","Custom REST API","n8n / Webhooks","CRM","WhatsApp / SMS"];
+export default function Integrations(){return <><div className="page-title"><div><h1>Integrations</h1><p>Give agents tools that can safely complete real business workflows.</p></div></div><div className="cards">{items.map(x=><div className="card" key={x}><b>{x}</b><p>Connect credentials server-side and expose only approved tool actions to each agent.</p><button className="btn">Connect</button></div>)}</div></>}
