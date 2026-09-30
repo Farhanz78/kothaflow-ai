@@ -2,26 +2,44 @@
 
 Updated: 2026-09-30
 
-## Implemented
-- Public Next.js repository and dashboard scaffold.
-- Landing page and dashboard pages for agents, calls, knowledge, phone/SIP, integrations, and billing.
-- Provider-neutral voice adapter types.
-- LiveKit-based realtime voice worker scaffold.
-- Initial Supabase migration with organizations, members, agents, numbers, knowledge, calls, integrations, leads, appointments, usage, and RLS foundations.
-- Business, architecture, pricing, research, launch, and AI-agent documentation.
+## Major correction
+The initial KothaFlow scaffold was started too much from scratch. The project has now been corrected to the required **open-source-first** process.
 
-## Scaffolded / demo-only
-- Dashboard currently uses mock/demo data.
-- Agent POST endpoint does not persist to Supabase yet.
-- Voice webhook uses temporary shared-secret verification and does not store normalized events yet.
-- Supabase is not connected because the account has reached its free-project limit.
-- No production LiveKit project/SIP trunk, auth/onboarding, billing, calendar, e-commerce, or CRM integration is connected yet.
+A public fork of Dograh has been created:
+**https://github.com/Farhanz78/kothaflow-core**
+
+This is now the primary voice/call-center foundation.
+
+## kothaflow-core
+- Full Dograh source is present through the GitHub fork.
+- Upstream license: BSD-2-Clause.
+- Upstream provides visual workflow builder, telephony, handoff, provider modularity, knowledge/tools, testing, APIs/SDKs, and MCP.
+- KothaFlow rebranding/business-specific adaptation is not finished yet.
+
+## kothaflow-ai
+Implemented:
+- business/product/engineering docs
+- open-source foundation research/decision
+- original Next.js UI/dashboard scaffold
+- original Supabase schema prototype
+
+Prototype / not canonical:
+- old LiveKit worker scaffold
+- mock dashboard data
+- prototype agent API/webhook
+- unconnected Supabase layer
+
+These should not drive architecture where Dograh already provides a better real implementation.
 
 ## External blockers
-- Supabase: existing 2 free projects are active. Do not pause/delete either without explicit approval.
-- Telephony/realtime voice requires provider credentials.
+- Supabase account currently has 2 active free projects; neither may be paused/deleted without explicit approval.
+- Real phone calls still require telephony/SIP and provider credentials.
 
-## Next build target
-A sellable clinic/dental AI receptionist demo with auth/workspace, agent config, clinic knowledge, SIP test route, appointment booking, human transfer, call records, usage/cost tracking, and voice evaluations.
-
-Update this document whenever implementation status materially changes.
+## Next work
+1. Audit Dograh code/features against KothaFlow PRD.
+2. Identify what can be used unchanged, rebranded, or extended.
+3. Rebrand the fork to KothaFlow without removing required BSD attribution.
+4. Add Bangladesh/Bangla/Banglish defaults and local SIP/IPTSP path.
+5. Build the clinic/dental workflow in the real core.
+6. Decide which KothaFlow-specific SaaS features remain in this control-plane repo.
+7. Benchmark real calls before declaring production readiness.
