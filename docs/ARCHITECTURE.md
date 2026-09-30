@@ -1,43 +1,59 @@
 # Architecture
 
-## Core principle
+## Open-source-first foundation
 
-KothaFlow owns the customer experience, tenant data model, workflows, analytics, billing logic, and provider routing. Voice vendors are replaceable adapters.
+KothaFlow uses the forked **Dograh** platform as the primary voice/call-center engine:
+`Farhanz78/kothaflow-core`.
+
+Dograh already provides major platform capabilities that should not be re-created in parallel: visual voice workflows, telephony integrations, human handoff, test audio/chat, knowledge/tools, provider modularity, APIs/SDKs, and MCP support.
 
 ```text
-PSTN / local IPTSP / global carrier
-        |
-       SIP
-        |
- LiveKit / managed voice provider
-        |
- realtime voice model OR STT -> LLM -> TTS
-        |
- KothaFlow tool gateway
-   |        |        |
-Calendar   CRM   Business APIs
-        |
- Supabase: tenants, agents, calls, knowledge, usage
-        |
- Next.js dashboard + billing/admin
+                   KothaFlow SaaS / business layer
+        branding · tenants · billing · BD onboarding · admin
+                           |
+                      API / SDK boundary
+                           |
+                 KothaFlow Core (Dograh fork)
+     workflow builder · voice runtime · tools · knowledge · tests
+                           |
+         telephony / SIP / Asterisk / carrier integrations
+                           |
+              LLM / realtime / STT / TTS providers
 ```
 
-## Why this architecture
+## Repo responsibilities
 
-- **Human-like UX:** realtime turn-taking, interruption handling, noise control, and low latency.
-- **Bangladesh-first:** custom/local SIP is a first-class path rather than assuming US phone numbers.
-- **Low lock-in:** LiveKit can be the controllable orchestration layer while Vapi, Retell, Bolna, or ElevenLabs remain selectable managed fallbacks.
-- **Cost control:** route simple calls to cheaper pipelines and reserve premium models/voices for high-value calls.
-- **Safety:** tools are allow-listed per agent; uncertain answers escalate instead of guessing.
+### kothaflow-core
+Forked Dograh source. Keep upstream merge-friendly. Put voice orchestration, telephony, workflow builder, tool runtime, knowledge runtime, and reusable operational call features here when they belong to the upstream-derived product.
 
-## Deployment
+### kothaflow-ai
+KothaFlow-specific SaaS/control plane and business differentiation:
+- Bangladesh-first onboarding and language defaults
+- organization/customer plans and billing/margin logic
+- reseller/agency/admin features
+- business templates, especially clinic/dental
+- Bangladesh SIP/IPTSP setup experience
+- product marketing/site/docs
+- cross-core analytics/business reporting where needed
 
-- Web/dashboard/API: Vercel
-- Database/Auth/Storage: Supabase
-- Realtime voice worker: LiveKit Cloud first; later self-host if economics justify it
-- SIP: licensed Bangladesh IPTSP for local numbers; global SIP carrier for international tenants
-- Background jobs: Supabase Edge Functions / queue worker / n8n for non-realtime work
+The older Next.js voice-agent scaffold in this repo is prototype code, not the canonical runtime.
 
-## Provider strategy
+## Supporting upstreams
 
-Do not hard-code the business around one vendor. Keep a normalized call event schema and provider adapter interface. Benchmark providers quarterly on: Bangla word error rate, interruption recovery, time-to-first-audio, p95 latency, tool-call reliability, transfer success, call completion, and blended cost per minute.
+Pipecat and LiveKit Agents remain high-quality upstream references/components. Use them only where Dograh has a real measured gap or already integrates them. Do not create duplicate runtime stacks without evidence.
+
+## Data strategy
+
+The exact control-plane database will be finalized after the core adaptation is mapped. A future Supabase project can handle KothaFlow-specific tenancy/auth/billing if it remains the simplest fit. Do not force Supabase into Dograh internals merely because the earlier scaffold assumed it.
+
+## Bangladesh
+
+Local licensed SIP/IPTSP compatibility is a first-class requirement. Bangla/Banglish/English quality must be benchmarked on real phone audio. Carrier/provider routing is chosen by measured quality, latency, reliability, and cost.
+
+## Safety
+
+Tools are allow-listed; unsupported business facts are never guessed; high-impact actions are confirmed; human transfer remains available.
+
+## Development rule
+
+Before a major implementation, inspect `docs/OPEN_SOURCE_FOUNDATION.md` and upstream code first. Prefer configure → extend → replace, in that order.
