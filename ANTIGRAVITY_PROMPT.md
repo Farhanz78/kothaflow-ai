@@ -1,32 +1,49 @@
 # Prompt for Gemini Antigravity
 
-You are taking over an existing production-oriented repository called **KothaFlow AI**, a Bangladesh-first, global-ready AI call-center SaaS. Do **not** rebuild blindly. First inspect the entire repository, `BUSINESS_PLAN.md`, `docs/ARCHITECTURE.md`, `docs/RESEARCH.md`, `docs/LAUNCH_CHECKLIST.md`, the Supabase migration, and `voice-agent/`.
+You are taking over **KothaFlow AI**, a Bangladesh-first, global-ready AI call-center product.
 
-Your job is to continue this codebase into a polished, working MVP while preserving its provider-independent architecture.
+## Critical architecture correction
+Do not continue building the voice platform from scratch in `kothaflow-ai`.
 
-Priorities:
-1. Finish authentication + onboarding + organization/workspace creation with Supabase.
-2. Replace dashboard mock data with tenant-scoped Supabase queries and real CRUD for agents, calls, knowledge, numbers, integrations, and usage.
-3. Implement knowledge ingestion/RAG safely (URL/document/Q&A), with citations/internal source references and a strict "do not invent unsupported business facts" policy.
-4. Connect the LiveKit voice worker end-to-end, including provider call IDs, webhook/event normalization, transcripts, summaries, outcomes, cost accounting, interruption handling, Bangla/Banglish/English behavior, and human handoff.
-5. Keep adapters/interfaces for Vapi, Retell, Bolna, and ElevenLabs; never scatter vendor-specific logic across UI/business code.
-6. Implement Google Calendar booking and a generic signed REST/webhook tool gateway. Tool permissions must be scoped per agent and tenant.
-7. Build a professional responsive UI for mobile + desktop. Keep the current visual direction but improve navigation, loading/empty/error states, forms, tables, charts, modals, confirmations, and accessibility.
-8. Add a testing playground to simulate calls and regression-test prompts before publishing an agent.
-9. Add admin/ops views for tenant health, failed calls, failed transfers, QA flags, provider spend, and gross margin.
-10. Add security: RLS verification, server-only secrets, webhook signature verification, rate limits, input validation, audit events, safe file handling, and tenant-bound provider IDs. Never expose service-role keys to the browser.
-11. Add automated tests for critical multi-tenant authorization and webhook normalization. Run lint/typecheck/tests/build after changes.
-12. Do not hardcode credentials or generated IDs. Keep `.env.example` updated.
+The primary open-source foundation is the BSD-2-Clause **Dograh** fork:
+**https://github.com/Farhanz78/kothaflow-core**
 
-Important product rules:
-- Natural phone UX matters more than chatbot verbosity. Replies should be short and conversational.
-- Caller interruptions must stop AI speech quickly.
-- Confirm dates, names, phone numbers, quantities, and money before irreversible actions.
-- If knowledge is missing, say so and offer handoff/message capture; never guess business facts.
-- Human transfer must remain available.
-- Bangladesh local SIP/IPTSP is a first-class route; global SIP is also supported.
-- Store normalized provider events so vendors can be swapped.
-- Track real provider cost and customer billable usage separately.
-- Preserve migration safety: create new migrations; do not edit an already-applied migration in production.
+The original Dograh upstream is:
+**https://github.com/dograh-hq/dograh**
 
-Before coding, write a short implementation plan based on the current repo. Then make the changes in small coherent commits. If an external credential or account is required, implement everything around it and leave an explicit setup step instead of faking success.
+Before coding, read:
+- `AGENTS.md`
+- `docs/OPEN_SOURCE_FOUNDATION.md`
+- `docs/PROJECT_STATE.md`
+- `docs/PRD.md`
+- `docs/ARCHITECTURE.md`
+- `docs/MVP_CLINIC_DEMO.md`
+
+## Mandatory workflow
+1. Inspect the Dograh fork first for any requested voice/call-center capability.
+2. Prefer **configure → extend → replace** in that order.
+3. Never rebuild an upstream feature in parallel without a documented measured gap.
+4. Preserve BSD-2-Clause copyright/license notices and keep modifications upstream-merge-friendly.
+5. Keep KothaFlow-specific business logic separated from generic upstream code.
+6. Search GitHub/the wider web for mature legally reusable OSS before implementing any other major subsystem from scratch.
+
+## Product priorities
+- Rebrand the Dograh-derived product to KothaFlow without breaking upstream attribution.
+- Bangladesh-first telephony: local SIP/IPTSP must be supported.
+- Bangla, Banglish, English phone behavior.
+- First sellable workflow: clinic/dental receptionist.
+- Real appointment booking.
+- Human handoff.
+- Grounded business knowledge; never invent unsupported facts.
+- Call records, outcomes, QA, actual provider cost, and customer billable usage.
+- Mobile + desktop professional UX.
+- Security and tenant isolation.
+- Provider/model flexibility based on measured latency, quality, reliability, and cost.
+
+## Important state
+The old Next.js dashboard, LiveKit worker, and Supabase schema in `kothaflow-ai` are prototypes. Do not treat them as sacred architecture. Reuse only pieces that remain useful after comparing them with the actual Dograh implementation.
+
+Supabase is currently blocked by the account's 2-active-free-project limit. Do not pause, delete, or modify the existing two projects.
+
+## Execution
+For substantial work, follow `.agent/PLANS.md`. Start with an audit and affected-file plan. Implement in coherent commits. Run relevant build/typecheck/tests/evals. If a credential or external service is missing, document the exact blocker and do not fake success. Update `docs/PROJECT_STATE.md` and `docs/DECISIONS.md` when reality changes.
